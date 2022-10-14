@@ -49,14 +49,14 @@ class PlgsystemModuleversion extends CMSPlugin
 	 *
 	 * @var    object
 	 */
-	protected $results = '';
+	protected static $results = null;
 
 	/**
 	 * Get the current module versions as result
 	 *
 	 * @var    integer
 	 */
-	protected $numberOfVersions = 0;
+	protected static $numberOfVersions = 0;
 
 	/**
 	 * Listener for the `onBeforeRender` event.
@@ -72,11 +72,10 @@ class PlgsystemModuleversion extends CMSPlugin
 			return;
 		}
 
-		// Get the entries of the current module from the DB as result.
-		$this->results = Helper::getVersions($this->app->input->get->getInt('id'));
+		self::loadVersionsResults();
 
 		// Return if we have no entries.
-		if (!count($this->results))
+		if (self::$numberOfVersions === 0)
 		{
 			return;
 		}
@@ -92,7 +91,7 @@ class PlgsystemModuleversion extends CMSPlugin
 		}
 
 		// Count the versions.
-		$this->numberOfVersions = count($this->results);
+		self::$numberOfVersions = count(self::$results);
 
 		// Load the Bootstrap modal JS.
 		HTMLHelper::_('bootstrap.modal');
@@ -113,7 +112,7 @@ class PlgsystemModuleversion extends CMSPlugin
 	public function onAfterRender(): void
 	{
 		// Check if client is administrator or we have results.
-		if (!$this->app->isClient('administrator') || !$this->results)
+		if (!$this->app->isClient('administrator') || !self::$results)
 		{
 			return;
 		}
@@ -145,7 +144,7 @@ class PlgsystemModuleversion extends CMSPlugin
 		<div class="accordion" id="accordionModInfo">
 		HTML;
 
-		foreach ($this->results as $index => $result)
+		foreach (self::$results as $index => $result)
 		{
 			$modContent = '';
 
@@ -238,16 +237,16 @@ class PlgsystemModuleversion extends CMSPlugin
 		if (($index = $this->app->input->post->getInt('index', -1)) >= 0)
 		{
 			// Get the index of the list.
-			$item = $this->results[$index];
+			$item = self::$results[$index];
 
 			// Update the current module with the selected version.
-			Helper::uodateVersion($item);
+			Helper::updateModuleToVersion($item);
 
 			// Reset the current check mark.
-			Helper::resetCurrent();
+			// Helper::resetCurrent();
 
 			// Set the check mark to new item.
-			Helper::setCurrent($item->id);
+			Helper::setCurrent($item->id, $item->mod_id); //phpcs:ignore
 
 			// Create waiting spinner overlay.
 			$waitingspinner = str_ireplace(
@@ -303,26 +302,21 @@ class PlgsystemModuleversion extends CMSPlugin
 			return;
 		}
 
+		self::loadVersionsResults();
+
 		// Store module version when isNew.
-		if ($isNew === true)
+		if ($isNew === true || self::$numberOfVersions === 0)
 		{
+			// Reset the current check mark.
+			Helper::resetCurrent($item->id); // phpcs:ignore
+
 			Helper::storeVersion($item);
 
 			return;
 		}
 
-		// Get the results
-		$this->results = Helper::getVersions($this->app->input->get->getInt('id'));
-
-		// Count the results
-		if (count($this->results))
-		{
-			// Set the number of results
-			$this->numberOfVersions = count($this->results);
-		}
-
 		// Compare module setting with latest version.
-		$moduleHasChanged = Helper::compareVersion($item, $this->results[0]);
+		$moduleHasChanged = Helper::compareVersion($item, self::$results[0]);
 
 		// If noting has changed return
 		if (!$moduleHasChanged)
@@ -331,7 +325,7 @@ class PlgsystemModuleversion extends CMSPlugin
 		}
 
 		// Reset the current check mark.
-		Helper::resetCurrent();
+		Helper::resetCurrent($item->id); // phpcs:ignore
 
 		// Store module version in DB.
 		Helper::storeVersion($item);
@@ -346,9 +340,9 @@ class PlgsystemModuleversion extends CMSPlugin
 		}
 
 		// Update the number of versions to store
-		if ($this->numberOfVersions >= $versionsToKeep)
+		if (self::$numberOfVersions >= $versionsToKeep)
 		{
-			$toMuchVersions = $this->numberOfVersions - $versionsToKeep;
+			$toMuchVersions = self::$numberOfVersions - $versionsToKeep;
 
 			if ($toMuchVersions >= 0)
 			{
@@ -380,5 +374,24 @@ class PlgsystemModuleversion extends CMSPlugin
 
 		// Delete the versions of the trashed module.
 		Helper::deleteVersion($table->id);
+	}
+
+	/**
+	 * Load the versions of the selected module.
+	 *
+	 * @return  void
+	 */
+	protected function loadVersionsResults(): void
+	{
+		if (self::$results !== null)
+		{
+			return;
+		}
+
+		// Get the entries of the current module from the DB as result.
+		self::$results = Helper::getVersions($this->app->input->get->getInt('id'));
+
+		// Count the versions.
+		self::$numberOfVersions = count(self::$results);
 	}
 }

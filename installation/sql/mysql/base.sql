@@ -636,7 +636,6 @@ CREATE TABLE IF NOT EXISTS `#__modules_versions` (
   `id` int NOT NULL AUTO_INCREMENT,
   `current` boolean NOT NULL DEFAULT 0,
   `mod_id` bigint(11) UNSIGNED NOT NULL,
-  `asset_id` bigint unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
   `title` varchar(100) NOT NULL DEFAULT '',
   `note` varchar(255) NOT NULL DEFAULT '',
   `content` text,

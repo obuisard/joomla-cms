@@ -660,7 +660,6 @@ CREATE TABLE IF NOT EXISTS `#__modules_versions` (
   "id" serial NOT NULL,
   "current" boolean DEFAULT 0 NOT NULL,
   "mod_id" bigint DEFAULT 0 NOT NULL,
-  "asset_id" bigint DEFAULT 0 NOT NULL,
   "title" varchar(100) NOT NULL DEFAULT '',
   "note" varchar(255) NOT NULL DEFAULT '',
   "content" text,
