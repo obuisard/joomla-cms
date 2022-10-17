@@ -111,7 +111,7 @@ abstract class Helper
 	}
 
 	/**
-	 * Datbase helper to reset the check icon.
+	 * Datbase helper to reset the star icon.
 	 *
 	 * @param   int $modId  The module ID.
 	 * @return  void
@@ -142,7 +142,7 @@ abstract class Helper
 	}
 
 	/**
-	 * Datbase helper to set the check icon.
+	 * Datbase helper to set the star icon.
 	 *
 	 * @param   int $id    Current module item.
 	 * @param   int $modId The module ID.
