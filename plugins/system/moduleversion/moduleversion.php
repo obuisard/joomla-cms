@@ -167,7 +167,7 @@ class PlgsystemModuleversion extends CMSPlugin
 
 			if ($result->current === 1)
 			{
-				$moduleTitle .= '<span class="ms-1 icon-check text-success" aria-hidden="true"></span>';
+				$moduleTitle .= '<span class="ms-1 icon-star text-success" aria-hidden="true"></span>';
 			}
 
 			$infoBtnTxt = Text::_('PLG_SYSTEM_MODULEVERSION_DETAILS_BTN');
