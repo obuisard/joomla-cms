@@ -377,6 +377,27 @@ class PlgsystemModuleversion extends CMSPlugin
 	}
 
 	/**
+	 * Method is called when an Extension is being uninstalled.
+	 *
+	 * @param   integer    $eid        Extension id
+	 *
+	 * @return  void
+	 *
+	 * @since   4.0.0
+	 */
+	public function onExtensionBeforeUninstall($eid)
+	{
+		// Check if client is administrator or view is module.
+		if (!$this->app->isClient('administrator'))
+		{
+			return;
+		}
+
+		// Delete the versions of the uninstalled module.
+		Helper::uninstallVersion($eid);
+	}
+
+	/**
 	 * Load the versions of the selected module.
 	 *
 	 * @return  void

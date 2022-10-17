@@ -232,6 +232,46 @@ abstract class Helper
 	}
 
 	/**
+	 * Datbase helper to delete verions of trashed modules.
+	 *
+	 * @param   string   $eid Current extension ID
+	 * @return  void
+	 */
+	public static function uninstallVersion($eid)
+	{
+		// Get the module element from the extension ID.
+		$db = Factory::getContainer()->get('DatabaseDriver');
+
+		$query = $db->getQuery(true);
+
+		$query->select($db->quoteName(array('element', 'client_id')));
+		$query->from($db->quoteName('#__extensions'));
+		$query->where($db->quoteName('extension_id') . " = " . $db->quote($eid));
+
+		$db->setQuery($query);
+
+		$moduleElement = $db->loadObjectList();
+
+		// Remove the module versions of current module
+		$db = Factory::getContainer()->get('DatabaseDriver');
+
+		$query = $db->getQuery(true);
+
+		$conditions = array(
+			$db->quoteName('module') . ' = ' . $db->quote($moduleElement[0]->element),
+			$db->quoteName('client_id') . ' = ' . $db->quote($moduleElement[0]->client_id),
+		);
+
+		$query
+			->delete($db->quoteName('#__modules_versions'))
+			->where($conditions);
+
+		$db->setQuery($query);
+
+		$db->execute();
+	}
+
+	/**
 	 * Datbase helper to compare the current module settings and the latest version in DB
 	 * @param   \stdClass $moduleSettings The current module item.
 	 * @param   \stdClass $loadedVersion  The version loaded from the database.
@@ -285,7 +325,7 @@ abstract class Helper
 
 	/**
 	 * Datbase helper to format up the parameters object
-	 * @param   string   $values   Object with module parameters
+	 * @param   string   $values	Object with module parameters
 	 * @return string
 	 */
 	public static function formatOutput($values): string
