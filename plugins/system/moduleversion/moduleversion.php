@@ -49,7 +49,7 @@ class PlgsystemModuleversion extends CMSPlugin
 	 *
 	 * @var    object
 	 */
-	protected static $results = null;
+	protected static $results;
 
 	/**
 	 * Get the current module versions as result
@@ -167,7 +167,7 @@ class PlgsystemModuleversion extends CMSPlugin
 
 			if ($result->current === 1)
 			{
-				$moduleTitle .= '<span class="ms-1 icon-star text-success" aria-hidden="true"></span>';
+				$moduleTitle .= '<span class="ms-1 icon-star" aria-hidden="true"></span>';
 			}
 
 			$infoBtnTxt = Text::_('PLG_SYSTEM_MODULEVERSION_DETAILS_BTN');
@@ -179,7 +179,7 @@ class PlgsystemModuleversion extends CMSPlugin
 			<div class="form-check d-flex align-items-center mx-3 pt-0 w-100">
 			<input class="form-check-input mt-0 me-2" type="radio" name="index" value="$index" id="moduleRadioSelect$index">
 			<label class="d-block d-sm-flex form-check-label" for="moduleRadioSelect$index">
-			<span class="d-block pe-3 mod-date-info">$result->changedate</span>
+			<span class="d-block pe-3 mod-date-info d-flex align-items-center">$result->changedate</span>
 			<span class="d-block pe-3 mod-title-info">
 			<span class="d-block">$moduleTitle</span>
 			<span class="small">$result->note</span>
