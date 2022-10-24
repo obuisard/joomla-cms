@@ -323,12 +323,6 @@ abstract class Helper
 		);
 	}
 
-	public static function createParamsTable($params): string
-	{
-
-		return '11111';
-	}
-
 	/**
 	 * Create the html params table from the object
 	 * @param   object   $values	Object with module parameters
@@ -359,9 +353,7 @@ abstract class Helper
 
 		$output .= '</ul>';
 
-		echo $output;
-
-		return('values will go here');
+		return($output);
 	}
 
 	/**
