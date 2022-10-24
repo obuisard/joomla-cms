@@ -323,51 +323,45 @@ abstract class Helper
 		);
 	}
 
+	public static function createParamsTable($params): string
+	{
+
+		return '11111';
+	}
+
 	/**
-	 * Datbase helper to format up the parameters object
-	 * @param   string   $values	Object with module parameters
+	 * Create the html params table from the object
+	 * @param   object   $values	Object with module parameters
 	 * @return string
 	 */
 	public static function formatOutput($values): string
 	{
-		$formatedData = json_decode($values);
-		$valuesTable = '<table class="table table-sm table-hover"><thead><tr>';
-		$valuesTable .= '<th scope="col">' . Text::_('PLG_SYSTEM_MODULEVERSION_KEY') . '</th>';
-		$valuesTable .= '<th scope="col">' . Text::_('PLG_SYSTEM_MODULEVERSION_VALUE') . '</th>';
-		$valuesTable .= '</tr></thead><tbody>';
-
-		foreach ($formatedData as $key => $value)
+		if (is_object($values))
 		{
-			if (is_object($value))
-			{
-				$value = (array) $value;
-			}
-
-			if (is_array($value))
-			{
-				$newValue = '';
-
-				foreach ($value as $index => $separateValue)
-				{
-					$newValue .= $separateValue;
-
-					if ($index !== array_key_last($value))
-					{
-						$newValue .= ', ';
-					}
-				}
-
-				$value = $newValue;
-			}
-
-			$key = str_replace('_', ' ', $key);
-
-			$valuesTable .= '<tr><td class="w-25 fw-bold" scope="row">' . $key . '</td><td>' . $value . '</td>';
+			$values = get_object_vars($values);
 		}
 
-		$valuesTable .= '</tbody></table>';
+		$output = '<ul>';
 
-		return($valuesTable);
+		foreach ($values as $key => $val)
+		{
+			if (is_object($val))
+			{
+				$val = get_object_vars($val);
+
+				$output .= '<li>' . $key . ' => ' . self::formatOutput($val) . '</li>';
+			}
+			else
+			{
+				$output .= '<li>' . $key . ' => ' . $val . '</li>';
+			}
+		}
+
+		$output .= '</ul>';
+
+		echo $output;
+
+		return('values will go here');
 	}
 
 	/**

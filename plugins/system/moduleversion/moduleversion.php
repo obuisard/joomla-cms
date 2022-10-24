@@ -159,6 +159,8 @@ class PlgsystemModuleversion extends CMSPlugin
 
 			if (!empty($result->params))
 			{
+				$result->params = json_decode($result->params);
+
 				$modParams = '<h4 class="bg-primary text-light px-3 py-1">' . Text::_('PLG_SYSTEM_MODULEVERSION_PARAMS_TITLE') . '</h4>';
 				$modParams .= '<div class="mb-1">' . Helper::formatOutput($result->params) . '</div>';
 			}
