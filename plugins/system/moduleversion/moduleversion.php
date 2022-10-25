@@ -123,11 +123,10 @@ class PlgsystemModuleversion extends CMSPlugin
 		$modalTitle = Text::_('PLG_SYSTEM_MODULEVERSION_MODALTITLE');
 		$modalButtonText = Text::_('PLG_SYSTEM_MODULEVERSION_LOADVERSION');
 		$modalInfo = Text::_('PLG_SYSTEM_MODULEVERSION_MODALINFO');
-		$PositionTxt = Text::_('COM_MODULES_FIELD_POSITION_LABEL');
 
 		// Create modal with dropdowns.
 		$newBodyOutput = <<<HTML
-		<div class="modal fade" id="modal-moduleVersions" tabindex="-1" aria-labelledby="moduleVersionsModalLabel" aria-hidden="true">
+		<div class="modal fade modal-module-versions" id="modal-moduleVersions" tabindex="-1" aria-labelledby="moduleVersionsModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-xl">
 		<div class="modal-content">
 		<div class="modal-header">
@@ -147,13 +146,29 @@ class PlgsystemModuleversion extends CMSPlugin
 
 		foreach (self::$results as $index => $result)
 		{
+			$modulePosition = $result->position ? $result->position : Text::_('JNONE');
+			$modulePublished = $result->published ? Text::_('JPUBLISHED') : Text::_('JUNPUBLISHED');
+			$moduleShowtitle = $result->showtitle ? Text::_('JSHOW') : Text::_('JHIDE');
+
+			$defaultParams = '<fieldset class="options-form p-3"><legend class="mb-0">' . Text::_('PLG_SYSTEM_MODULEVERSION_GLOBALPARAMS_TITLE') . '</legend>';
+			$defaultParams .= '<div class="overflow-hidden ps-3">';
+			$defaultParams .= '<dl class="dl-horizontal">';
+			$defaultParams .= '<dt class="d-flex justify-content-between"><span>' . Text::_('COM_MODULES_FIELD_POSITION_LABEL');
+			$defaultParams .= '</span><span class="ms-1">:</span></dt><dd><span class="badge bg-info">' . $modulePosition . '</span></dd>';
+			$defaultParams .= '<dt class="d-flex justify-content-between"><span>' . Text::_('JSTATUS');
+			$defaultParams .= '</span><span class="ms-1">:</span></dt><dd>' . $modulePublished . '</dd>';
+			$defaultParams .= '<dt class="d-flex justify-content-between"><span>' . Text::_('JGLOBAL_TITLE');
+			$defaultParams .= '</span><span class="ms-1">:</span></dt><dd>' . $moduleShowtitle . '</dd>';
+			$defaultParams .= '</dl>';
+			$defaultParams .= '</div></fieldset>';
+
 			$modContent = '';
 
 			if (!empty($result->content))
 			{
+				$result->content = str_replace('src="images', 'src="' . URI::root(true) . '/images', $result->content);
 				$modContent = '<fieldset class="options-form p-3"><legend class="mb-0">' . Text::_('PLG_SYSTEM_MODULEVERSION_CONTENT_TITLE') . '</legend>';
-				$modContent .= '<div class="overflow-hidden ps-3">';
-				$modContent .= str_replace('src="images', 'src="' . URI::root(true) . '/images', $result->content) . '</div></fieldset>';
+				$modContent .= '<div class="overflow-hidden ps-3">' . $result->content . '</div></fieldset>';
 			}
 
 			$modParams = '';
@@ -170,8 +185,6 @@ class PlgsystemModuleversion extends CMSPlugin
 			{
 				$moduleTitle .= '<span class="ms-1 icon-star" aria-hidden="true"></span>';
 			}
-
-			$modulePosition = $result->position ? $result->position : Text::_('JNONE');
 
 			$newBodyOutput .= <<<HTML
 
@@ -204,9 +217,7 @@ class PlgsystemModuleversion extends CMSPlugin
 				aria-labelledby="heading$index"
 				data-bs-parent="#accordionModInfo">
 				<div class="accordion-body border-top">
-				<div class="position-info d-inline-flex align-items-center mb-2">
-				$PositionTxt:<span class="ms-2 badge bg-info">$modulePosition</span>
-				</div>
+				$defaultParams
 				$modContent
 				$modParams
 				</div>

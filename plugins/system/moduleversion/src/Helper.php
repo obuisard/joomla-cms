@@ -11,6 +11,7 @@
 namespace Joomla\Plugin\System\Moduleversion;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Uri\Uri;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -351,7 +352,7 @@ abstract class Helper
 			$values = get_object_vars($values);
 		}
 
-		$output = '<ul>';
+		$output = '<dl class="dl-horizontal">';
 
 		foreach ($values as $key => $val)
 		{
@@ -359,15 +360,20 @@ abstract class Helper
 			{
 				$val = is_object($val) ? get_object_vars($val) : $val;
 
-				$output .= '<li>' . $key . ' => ' . self::formatOutput($val) . '</li>';
+				$output .= '<dt>' . $key . '</dt><dd>' . self::formatOutput($val) . '</dd>';
 			}
 			else
 			{
-				$output .= '<li>' . $key . ' => ' . $val . '</li>';
+				$val = empty($val) ? '---' : $val;
+
+				$val = str_replace('src="images', 'src="' . URI::root(true) . '/images', $val);
+
+				$output .= '<dt class="d-flex justify-content-between"><span>' . $key;
+				$output .= '</span><span class="ms-1">:</span></dt><dd>' . $val . '</dd>';
 			}
 		}
 
-		$output .= '</ul>';
+		$output .= '</dl>';
 
 		return($output);
 	}
