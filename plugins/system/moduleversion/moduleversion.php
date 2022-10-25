@@ -123,6 +123,7 @@ class PlgsystemModuleversion extends CMSPlugin
 		$modalTitle = Text::_('PLG_SYSTEM_MODULEVERSION_MODALTITLE');
 		$modalButtonText = Text::_('PLG_SYSTEM_MODULEVERSION_LOADVERSION');
 		$modalInfo = Text::_('PLG_SYSTEM_MODULEVERSION_MODALINFO');
+		$PositionTxt = Text::_('COM_MODULES_FIELD_POSITION_LABEL');
 
 		// Create modal with dropdowns.
 		$newBodyOutput = <<<HTML
@@ -150,19 +151,17 @@ class PlgsystemModuleversion extends CMSPlugin
 
 			if (!empty($result->content))
 			{
-				$modContent = '<h4 class="bg-primary text-light px-3 py-1">' . Text::_('PLG_SYSTEM_MODULEVERSION_CONTENT_TITLE') . '</h4>';
-				$modContent .= '<div class="mb-4 overflow-hidden">';
-				$modContent .= str_replace('src="images', 'src="' . URI::root(true) . '/images', $result->content) . '</div>';
+				$modContent = '<fieldset class="options-form p-3"><legend class="mb-0">' . Text::_('PLG_SYSTEM_MODULEVERSION_CONTENT_TITLE') . '</legend>';
+				$modContent .= '<div class="overflow-hidden ps-3">';
+				$modContent .= str_replace('src="images', 'src="' . URI::root(true) . '/images', $result->content) . '</div></fieldset>';
 			}
 
 			$modParams = '';
 
 			if (!empty($result->params))
 			{
-				$result->params = json_decode($result->params);
-
-				$modParams = '<h4 class="bg-primary text-light px-3 py-1">' . Text::_('PLG_SYSTEM_MODULEVERSION_PARAMS_TITLE') . '</h4>';
-				$modParams .= '<div class="mb-1">' . Helper::formatOutput($result->params) . '</div>';
+				$modParams = '<fieldset class="options-form p-3"><legend class="mb-0">' . Text::_('PLG_SYSTEM_MODULEVERSION_PARAMS_TITLE') . '</legend>';
+				$modParams .= '<div class="overflow-hidden ps-3">' . Helper::formatOutput(json_decode($result->params, true)) . '</div></fieldset>';
 			}
 
 			$moduleTitle = $result->title;
@@ -172,33 +171,30 @@ class PlgsystemModuleversion extends CMSPlugin
 				$moduleTitle .= '<span class="ms-1 icon-star" aria-hidden="true"></span>';
 			}
 
-			$infoBtnTxt = Text::_('PLG_SYSTEM_MODULEVERSION_DETAILS_BTN');
+			$modulePosition = $result->position ? $result->position : Text::_('JNONE');
 
 			$newBodyOutput .= <<<HTML
 
 			<div class="accordion-item">
 			<div class="accordion-header d-block d-sm-flex justify-content-between" id="heading$index">
-			<div class="form-check d-flex align-items-center mx-3 pt-0 w-100">
+			<div class="form-check d-flex align-items-center mx-3 pt-0">
 			<input class="form-check-input mt-0 me-2" type="radio" name="index" value="$index" id="moduleRadioSelect$index">
 			<label class="d-block d-sm-flex form-check-label" for="moduleRadioSelect$index">
 			<span class="d-block pe-3 mod-date-info d-flex align-items-center">$result->changedate</span>
-			<span class="d-block pe-3 mod-title-info">
-			<span class="d-block">$moduleTitle</span>
-			<span class="small">$result->note</span>
-			</span>
-			<span class="d-block mod-pos-info ms-auto">
-				<span class="badge bg-info">$result->position</span>
-			</span>
 			</label>
 			</div>
-			<div class="button-wrapper d-flex justify-content-end">
-			<button	class="accordion-button collapsed collapsed small d-flex align-items-center"
+			<div class="button-wrapper w-100">
+			<button	class="accordion-button collapsed collapsed d-flex align-items-center w-100"
 				type="button"
 				data-bs-toggle="collapse"
 				data-bs-target="#collapse$index"
 				aria-expanded="false"
 				aria-controls="collapse$index">
-				<span class="me-2">$infoBtnTxt</span>
+				<span class="d-block mod-title-info w-100 d-flex align-items-center me-2">
+					<span class="me-1">$moduleTitle</span>
+					<span class="small">$result->note</span>
+				</span>
+
 			</button>
 			</div>
 			</div>
@@ -208,6 +204,9 @@ class PlgsystemModuleversion extends CMSPlugin
 				aria-labelledby="heading$index"
 				data-bs-parent="#accordionModInfo">
 				<div class="accordion-body border-top">
+				<div class="position-info d-inline-flex align-items-center mb-2">
+				$PositionTxt:<span class="ms-2 badge bg-info">$modulePosition</span>
+				</div>
 				$modContent
 				$modParams
 				</div>

@@ -11,7 +11,6 @@
 namespace Joomla\Plugin\System\Moduleversion;
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -32,6 +31,9 @@ abstract class Helper
 	 */
 	public static function getVersions($moduleId): array
 	{
+		/**
+		 * @var \Joomla\Database\DatabaseDriver $db
+		 */
 		$db = Factory::getContainer()->get('DatabaseDriver');
 
 		$query = $db->getQuery(true);
@@ -79,6 +81,9 @@ abstract class Helper
 	 */
 	public static function storeVersion($item)
 	{
+		/**
+		 * @var \Joomla\Database\DatabaseDriver $db
+		 */
 		$db = Factory::getContainer()->get('DatabaseDriver');
 
 		$query = $db->getQuery(true);
@@ -118,6 +123,9 @@ abstract class Helper
 	 */
 	public static function resetCurrent(int $modId)
 	{
+		/**
+		 * @var \Joomla\Database\DatabaseDriver $db
+		 */
 		$db = Factory::getContainer()->get('DatabaseDriver');
 
 		$query = $db->getQuery(true);
@@ -184,6 +192,9 @@ abstract class Helper
 	 */
 	public static function updateModuleToVersion(\stdClass $item): void
 	{
+		/**
+		 * @var \Joomla\Database\DatabaseDriver $db
+		 */
 		$db = Factory::getContainer()->get('DatabaseDriver');
 
 		$query = $db->getQuery(true);
@@ -214,6 +225,9 @@ abstract class Helper
 	 */
 	public static function deleteVersion($item)
 	{
+		/**
+		 * @var \Joomla\Database\DatabaseDriver $db
+		 */
 		$db = Factory::getContainer()->get('DatabaseDriver');
 
 		$query = $db->getQuery(true);
@@ -239,7 +253,9 @@ abstract class Helper
 	 */
 	public static function uninstallVersion($eid)
 	{
-		// Get the module element from the extension ID.
+		/**
+		 * @var \Joomla\Database\DatabaseDriver $db
+		 */
 		$db = Factory::getContainer()->get('DatabaseDriver');
 
 		$query = $db->getQuery(true);
@@ -339,9 +355,9 @@ abstract class Helper
 
 		foreach ($values as $key => $val)
 		{
-			if (is_object($val))
+			if (is_object($val) || is_array($val))
 			{
-				$val = get_object_vars($val);
+				$val = is_object($val) ? get_object_vars($val) : $val;
 
 				$output .= '<li>' . $key . ' => ' . self::formatOutput($val) . '</li>';
 			}
@@ -364,6 +380,9 @@ abstract class Helper
 	 */
 	public static function removeObsolete($id)
 	{
+		/**
+		 * @var \Joomla\Database\DatabaseDriver $db
+		 */
 		$db = Factory::getContainer()->get('DatabaseDriver');
 
 		$query = $db->getQuery(true);
