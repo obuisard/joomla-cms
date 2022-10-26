@@ -33,6 +33,18 @@
 					min="1"
 					description="PLG_SYSTEM_MODULEVERSION_VERSIONS_DESC"
 				/>
+				<field
+					name="showparams"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_SYSTEM_MODULEVERSION_SHOWPARAMS"
+					description="PLG_SYSTEM_MODULEVERSION_SHOWPARAMS_DESC"
+					default="1"
+					filter="integer"
+					>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
 			</fieldset>
 		</fields>
 	</config>

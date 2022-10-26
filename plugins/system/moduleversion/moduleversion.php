@@ -149,9 +149,10 @@ class PlgsystemModuleversion extends CMSPlugin
 			$modulePosition = $result->position ? $result->position : Text::_('JNONE');
 			$modulePublished = $result->published ? Text::_('JPUBLISHED') : Text::_('JUNPUBLISHED');
 			$moduleShowtitle = $result->showtitle ? Text::_('JSHOW') : Text::_('JHIDE');
+			$moduleLanguage = $result->language = '*' ? Text::_('JALL_LANGUAGE') : $result->language;
 
 			$defaultParams = '<fieldset class="options-form p-3"><legend class="mb-0">' . Text::_('PLG_SYSTEM_MODULEVERSION_GLOBALPARAMS_TITLE') . '</legend>';
-			$defaultParams .= '<div class="overflow-hidden ps-3">';
+			$defaultParams .= '<div class="overflow-hidden">';
 			$defaultParams .= '<dl class="dl-horizontal">';
 			$defaultParams .= '<dt class="d-flex justify-content-between"><span>' . Text::_('COM_MODULES_FIELD_POSITION_LABEL');
 			$defaultParams .= '</span><span class="ms-1">:</span></dt><dd><span class="badge bg-info">' . $modulePosition . '</span></dd>';
@@ -159,6 +160,8 @@ class PlgsystemModuleversion extends CMSPlugin
 			$defaultParams .= '</span><span class="ms-1">:</span></dt><dd>' . $modulePublished . '</dd>';
 			$defaultParams .= '<dt class="d-flex justify-content-between"><span>' . Text::_('JGLOBAL_TITLE');
 			$defaultParams .= '</span><span class="ms-1">:</span></dt><dd>' . $moduleShowtitle . '</dd>';
+			$defaultParams .= '<dt class="d-flex justify-content-between"><span>' . Text::_('JGRID_HEADING_LANGUAGE');
+			$defaultParams .= '</span><span class="ms-1">:</span></dt><dd>' . $moduleLanguage . '</dd>';
 			$defaultParams .= '</dl>';
 			$defaultParams .= '</div></fieldset>';
 
@@ -176,7 +179,7 @@ class PlgsystemModuleversion extends CMSPlugin
 			if (!empty($result->params))
 			{
 				$modParams = '<fieldset class="options-form p-3"><legend class="mb-0">' . Text::_('PLG_SYSTEM_MODULEVERSION_PARAMS_TITLE') . '</legend>';
-				$modParams .= '<div class="overflow-hidden ps-3">' . Helper::formatOutput(json_decode($result->params, true)) . '</div></fieldset>';
+				$modParams .= '<div class="overflow-hidden">' . Helper::formatOutput(json_decode($result->params, true)) . '</div></fieldset>';
 			}
 
 			$moduleTitle = $result->title;
