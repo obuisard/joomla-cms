@@ -364,7 +364,7 @@ abstract class Helper
 			}
 			else
 			{
-				$val = empty($val) ? '---' : $val;
+				$val = empty($val) ? '' : $val;
 
 				$val = str_replace('src="images', 'src="' . URI::root(true) . '/images', $val);
 

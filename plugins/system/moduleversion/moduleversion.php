@@ -126,7 +126,11 @@ class PlgsystemModuleversion extends CMSPlugin
 
 		// Create modal with dropdowns.
 		$newBodyOutput = <<<HTML
-		<div class="modal fade modal-module-versions" id="modal-moduleVersions" tabindex="-1" aria-labelledby="moduleVersionsModalLabel" aria-hidden="true">
+		<div class="modal fade modal-module-versions"
+			id="modal-moduleVersions"
+			tabindex="-1"
+			aria-labelledby="moduleVersionsModalLabel"
+			aria-hidden="true">
 		<div class="modal-dialog modal-xl">
 		<div class="modal-content">
 		<div class="modal-header">
@@ -149,7 +153,7 @@ class PlgsystemModuleversion extends CMSPlugin
 			$modulePosition = $result->position ? $result->position : Text::_('JNONE');
 			$modulePublished = $result->published ? Text::_('JPUBLISHED') : Text::_('JUNPUBLISHED');
 			$moduleShowtitle = $result->showtitle ? Text::_('JSHOW') : Text::_('JHIDE');
-			$moduleLanguage = $result->language = '*' ? Text::_('JALL_LANGUAGE') : $result->language;
+			$moduleLanguage = $result->language == '*' ? Text::_('JALL_LANGUAGE') : $result->language;
 
 			$defaultParams = '<fieldset class="options-form p-3"><legend class="mb-0">' . Text::_('PLG_SYSTEM_MODULEVERSION_GLOBALPARAMS_TITLE') . '</legend>';
 			$defaultParams .= '<div class="overflow-hidden">';
@@ -162,10 +166,13 @@ class PlgsystemModuleversion extends CMSPlugin
 			$defaultParams .= '</span><span class="ms-1">:</span></dt><dd>' . $moduleShowtitle . '</dd>';
 			$defaultParams .= '<dt class="d-flex justify-content-between"><span>' . Text::_('JGRID_HEADING_LANGUAGE');
 			$defaultParams .= '</span><span class="ms-1">:</span></dt><dd>' . $moduleLanguage . '</dd>';
+			$defaultParams .= '<dt class="d-flex justify-content-between"><span>' . Text::_('JGRID_HEADING_ACCESS');
+			$defaultParams .= '</span><span class="ms-1">:</span></dt><dd>' . $result->access . '</dd>';
 			$defaultParams .= '</dl>';
 			$defaultParams .= '</div></fieldset>';
 
 			$modContent = '';
+			$showParams = (bool) $this->params->get('showparams', 1);
 
 			if (!empty($result->content))
 			{
@@ -176,7 +183,7 @@ class PlgsystemModuleversion extends CMSPlugin
 
 			$modParams = '';
 
-			if (!empty($result->params))
+			if (!empty($result->params) && $showParams)
 			{
 				$modParams = '<fieldset class="options-form p-3"><legend class="mb-0">' . Text::_('PLG_SYSTEM_MODULEVERSION_PARAMS_TITLE') . '</legend>';
 				$modParams .= '<div class="overflow-hidden">' . Helper::formatOutput(json_decode($result->params, true)) . '</div></fieldset>';
@@ -189,26 +196,28 @@ class PlgsystemModuleversion extends CMSPlugin
 				$moduleTitle .= '<span class="ms-1 icon-star" aria-hidden="true"></span>';
 			}
 
+			$titlePadding = $result->note ? ' py-2' : ' py-2 p-lg-3';
+
 			$newBodyOutput .= <<<HTML
 
 			<div class="accordion-item">
-			<div class="accordion-header d-block d-sm-flex justify-content-between" id="heading$index">
-			<div class="form-check d-flex align-items-center mx-3 pt-0">
+			<div class="accordion-header d-block d-lg-flex justify-content-between" id="heading$index">
+			<div class="form-check d-flex align-items-center mx-3 pb-1">
 			<input class="form-check-input mt-0 me-2" type="radio" name="index" value="$index" id="moduleRadioSelect$index">
 			<label class="d-block d-sm-flex form-check-label" for="moduleRadioSelect$index">
 			<span class="d-block pe-3 mod-date-info d-flex align-items-center">$result->changedate</span>
 			</label>
 			</div>
 			<div class="button-wrapper w-100">
-			<button	class="accordion-button collapsed collapsed d-flex align-items-center w-100"
+			<button	class="accordion-button collapsed collapsed d-flex align-items-center w-100$titlePadding"
 				type="button"
 				data-bs-toggle="collapse"
 				data-bs-target="#collapse$index"
 				aria-expanded="false"
 				aria-controls="collapse$index">
-				<span class="d-block mod-title-info w-100 d-flex align-items-center me-2">
-					<span class="me-1">$moduleTitle</span>
-					<span class="small">$result->note</span>
+				<span class="d-block mod-title-info w-100 me-2">
+					<span class="d-block">$moduleTitle</span>
+					<span class="small d-block">$result->note</span>
 				</span>
 
 			</button>
